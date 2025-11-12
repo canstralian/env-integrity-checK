@@ -1,0 +1,21 @@
+metadata:
+  name: Example Environment Policy
+  version: 1.0.0
+  description: Example policy for environment variable validation
+
+required:
+  - APP_NAME
+  - APP_ENV
+  - DATABASE_URL
+
+forbidden:
+  - UNSAFE_MODE
+  - ALLOW_ALL_ORIGINS
+
+patterns:
+  - regex: ".*_PROD_.*"
+    action: warn
+    message: Production variables should not be in .env files
+  - regex: "^TEST_.*"
+    action: warn
+    message: Test variables detected in environment
