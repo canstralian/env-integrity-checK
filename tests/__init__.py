@@ -1,1 +1,3 @@
-# Tests for env-integrity-check
+"""
+Tests for env-integrity-check.
+"""

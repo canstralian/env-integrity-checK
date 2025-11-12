@@ -1,4 +1,3 @@
-
 # env-integrity-checK
 
 [![License](https://img.shields.io/github/license/canstralian/env-integrity-checK)](LICENSE)
@@ -13,75 +12,185 @@ Environment configuration compliance framework with SARIF output.
 
 - [Overview](#overview)
 - [Key Features](#key-features)
-- [Getting Started](#getting-started)
 - [Installation](#installation)
 - [Usage](#usage)
+- [Schema Definition](#schema-definition)
+- [Policy Definition](#policy-definition)
+- [SARIF Output](#sarif-output)
+- [Development](#development)
 - [Contributing](#contributing)
 - [License](#license)
 
 ## Overview
 
-`env-integrity-checK` is a lightweight, extensible framework for ensuring that your environment configurations comply with your organization's policies. The tool generates reports in the Static Analysis Results Interchange Format (SARIF), making it compatible with numerous development tools and CI/CD pipelines.
+`env-integrity-checK` is a Python CLI tool that validates `.env` files against Pydantic schemas, detects secrets using `detect-secrets`, sanitizes sensitive values, and emits deterministic SARIF reports for CI/CD integration. The tool generates reports in the Static Analysis Results Interchange Format (SARIF), making it compatible with numerous development tools and CI/CD pipelines.
 
 ## Key Features
 
-- 🔍 **Environment Compliance Auditing**: Validate configuration files for compliance with best practices.
-- 🛠️ **SARIF Reporting**: Output results in SARIF format for easy integration with tools like GitHub Advanced Security.
-- 🚀 **CI/CD Integration**: Easily add to workflows to automate environment integrity checks.
-- ✅ **Cross-Platform**: Supports Linux, macOS, and Windows.
+- 🔍 **Schema Validation**: Validate environment variables against Pydantic models
+- 🔐 **Secret Detection**: Detect secrets and credentials using `detect-secrets`
+- 📋 **Policy Enforcement**: Define and enforce custom policies for environment variables
+- 📊 **SARIF Output**: Generate SARIF 2.1.0 compliant reports for CI/CD integration
+- 🧹 **Sanitization**: Automatically sanitize sensitive values in output
+- 📈 **Metrics**: Track validation metrics for reporting
+- ✅ **Cross-Platform**: Supports Linux, macOS, and Windows
 
-## Getting Started
+## Installation
 
-These instructions will help you set up and use `env-integrity-checK` in your project.
-
-### Prerequisites
-
-Ensure you have the following dependencies installed:
-
-- Python 3.8+
-- pip
-- Git
-
-### Installation
-
-You can install `env-integrity-checK` using `pip`:
+### Using pip
 
 ```bash
 pip install env-integrity-check
 ```
 
-Or clone the repository directly:
+### From source
 
 ```bash
 git clone https://github.com/canstralian/env-integrity-checK.git
 cd env-integrity-checK
-pip install -r requirements.txt
+pip install -e .
 ```
 
-### Usage
-
-Run the following command to audit an environment configuration file:
+### For development
 
 ```bash
-env-integrity-check --config <path-to-config-file> --output sarif
+pip install -e ".[dev]"
 ```
 
-#### Example
+## Usage
+
+### Basic Usage
 
 ```bash
-env-integrity-check --config ./example.env --output results.sarif
+env-integrity-check path/to/.env
 ```
 
-### Options
+### With Schema Validation
 
-| Flag       | Description                          |
-|------------|--------------------------------------|
-| `--config` | Path to the environment config file. |
-| `--output` | Output format (`sarif`, `json`).     |
+```bash
+env-integrity-check path/to/.env --schema path/to/schema.py
+```
+
+### With Policy Enforcement
+
+```bash
+env-integrity-check path/to/.env --policy path/to/policy.yaml
+```
+
+### Full Example
+
+```bash
+env-integrity-check examples/example.env \
+  --schema examples/schema.py \
+  --policy examples/policy.yaml \
+  --output report.sarif \
+  --metrics
+```
+
+### Command Options
+
+| Flag | Description |
+|------|-------------|
+| `--schema PATH` | Path to Pydantic schema module (Python file) |
+| `--policy PATH` | Path to policy YAML file |
+| `--output PATH, -o PATH` | Output SARIF report file (default: stdout) |
+| `--sanitize/--no-sanitize` | Sanitize sensitive values in output (default: enabled) |
+| `--detect-secrets/--no-detect-secrets` | Run detect-secrets scanner (default: enabled) |
+| `--metrics/--no-metrics` | Include metrics in output (default: disabled) |
+| `--version` | Show version and exit |
+| `--help` | Show help message and exit |
+
+## Schema Definition
+
+Define a Pydantic model to validate your environment variables:
+
+```python
+from pydantic import BaseModel, Field
+
+class AppConfig(BaseModel):
+    app_name: str = Field(..., description="Application name")
+    app_env: str = Field(..., description="Environment (dev, staging, prod)")
+    database_url: str = Field(..., description="Database connection URL")
+    api_key: str = Field(..., description="API key")
+    debug: bool = Field(default=False, description="Debug mode")
+    port: int = Field(default=8000, description="Application port")
+```
+
+## Policy Definition
+
+Define policies in YAML format:
+
+```yaml
+metadata:
+  name: Environment Policy
+  version: 1.0.0
+
+required:
+  - APP_NAME
+  - DATABASE_URL
+
+forbidden:
+  - DEBUG_MODE
+  - UNSAFE_SETTING
+
+patterns:
+  - regex: ".*_PROD_.*"
+    action: warn
+    message: Production variables should not be in .env files
+```
+
+## SARIF Output
+
+The tool generates SARIF 2.1.0 compliant reports that can be consumed by CI/CD systems:
+
+```json
+{
+  "version": "2.1.0",
+  "$schema": "https://json.schemastore.org/sarif-2.1.0.json",
+  "runs": [
+    {
+      "tool": {
+        "driver": {
+          "name": "env-integrity-check",
+          "version": "0.1.0",
+          "rules": [...]
+        }
+      },
+      "results": [...]
+    }
+  ]
+}
+```
+
+## Development
+
+### Running Tests
+
+```bash
+pytest
+```
+
+### With Coverage
+
+```bash
+pytest --cov=env_integrity_check --cov-report=html
+```
+
+### Code Formatting
+
+```bash
+black env_integrity_check tests
+```
+
+### Linting
+
+```bash
+ruff check env_integrity_check tests
+```
 
 ## Contributing
 
-We welcome contributions! To get started, check out our [CONTRIBUTING.md](CONTRIBUTING.md).
+We welcome contributions! To get started:
 
 1. Fork the repository.
 2. Create your feature branch (`git checkout -b feature/AmazingFeature`).
@@ -94,6 +203,3 @@ Please make sure to update tests as appropriate.
 ## License
 
 This project is licensed under the terms of the [MIT License](LICENSE).
-```
-
----

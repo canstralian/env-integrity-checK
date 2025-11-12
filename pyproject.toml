@@ -10,7 +10,7 @@ readme = "README.md"
 requires-python = ">=3.8"
 license = {text = "MIT"}
 authors = [
-    {name = "Your Name", email = "you@example.com"}
+    {name = "canstralian", email = "canstralian@users.noreply.github.com"}
 ]
 classifiers = [
     "Development Status :: 4 - Beta",
@@ -25,24 +25,31 @@ classifiers = [
 ]
 
 dependencies = [
-    "click>=8.0.0",
     "pydantic>=2.0.0",
+    "click>=8.0.0",
+    "python-dotenv>=1.0.0",
+    "detect-secrets>=1.4.0",
+    "pyyaml>=6.0.0",
 ]
 
 [project.optional-dependencies]
-secrets = [
-    "detect-secrets>=1.4.0",
+dev = [
+    "pytest>=7.0.0",
+    "pytest-cov>=4.0.0",
+    "black>=23.0.0",
+    "ruff>=0.1.0",
+    "mypy>=1.0.0",
 ]
 test = [
     "pytest>=7.0.0",
     "pytest-cov>=4.0.0",
 ]
 all = [
-    "env-integrity-check[secrets,test]",
+    "env-integrity-check[dev,test]",
 ]
 
 [project.scripts]
-env-integrity-check = "env_integrity_check.cli:cli"
+env-integrity-check = "env_integrity_check.cli:main"
 
 [project.urls]
 Homepage = "https://github.com/canstralian/env-integrity-check"
@@ -50,7 +57,8 @@ Repository = "https://github.com/canstralian/env-integrity-check"
 Issues = "https://github.com/canstralian/env-integrity-check/issues"
 
 [tool.setuptools.packages.find]
-where = ["src"]
+where = ["."]
+include = ["env_integrity_check*"]
 
 [tool.pytest.ini_options]
 testpaths = ["tests"]
@@ -58,3 +66,18 @@ python_files = ["test_*.py"]
 python_classes = ["Test*"]
 python_functions = ["test_*"]
 addopts = "-v --tb=short"
+
+[tool.black]
+line-length = 100
+target-version = ['py38']
+
+[tool.ruff]
+line-length = 100
+target-version = "py38"
+select = ["E", "F", "W", "I", "N"]
+
+[tool.mypy]
+python_version = "3.8"
+warn_return_any = true
+warn_unused_configs = true
+disallow_untyped_defs = false
