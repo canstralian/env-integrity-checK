@@ -1,27 +1,57 @@
-# env-integrity-check
+# env-integrity-checK
+
+[![License](https://img.shields.io/github/license/canstralian/env-integrity-checK)](LICENSE)
+[![Tests](https://github.com/canstralian/env-integrity-checK/actions/workflows/tests.yml/badge.svg)](https://github.com/canstralian/env-integrity-checK/actions)
+[![Coverage](https://img.shields.io/codecov/c/github/canstralian/env-integrity-checK)](https://codecov.io/gh/canstralian/env-integrity-checK)
+[![Version](https://img.shields.io/github/v/release/canstralian/env-integrity-checK)](https://github.com/canstralian/env-integrity-checK/releases)
+[![Issues](https://img.shields.io/github/issues/canstralian/env-integrity-checK)](https://github.com/canstralian/env-integrity-checK/issues)
 
 Environment configuration compliance framework with SARIF output.
 
+## Table of Contents
+
+- [Overview](#overview)
+- [Key Features](#key-features)
+- [Installation](#installation)
+- [Usage](#usage)
+- [Schema Definition](#schema-definition)
+- [Policy Definition](#policy-definition)
+- [SARIF Output](#sarif-output)
+- [Development](#development)
+- [Contributing](#contributing)
+- [License](#license)
+
 ## Overview
 
-`env-integrity-check` is a Python CLI tool that validates `.env` files against Pydantic schemas, detects secrets using `detect-secrets`, sanitizes sensitive values, and emits deterministic SARIF reports for CI/CD integration.
+`env-integrity-checK` is a Python CLI tool that validates `.env` files against Pydantic schemas, detects secrets using `detect-secrets`, sanitizes sensitive values, and emits deterministic SARIF reports for CI/CD integration. The tool generates reports in the Static Analysis Results Interchange Format (SARIF), making it compatible with numerous development tools and CI/CD pipelines.
 
-## Features
+## Key Features
 
-- **Schema Validation**: Validate environment variables against Pydantic models
-- **Secret Detection**: Detect secrets and credentials using `detect-secrets`
-- **Policy Enforcement**: Define and enforce custom policies for environment variables
-- **SARIF Output**: Generate SARIF 2.1.0 compliant reports for CI/CD integration
-- **Sanitization**: Automatically sanitize sensitive values in output
-- **Metrics**: Track validation metrics for reporting
+- 🔍 **Schema Validation**: Validate environment variables against Pydantic models
+- 🔐 **Secret Detection**: Detect secrets and credentials using `detect-secrets`
+- 📋 **Policy Enforcement**: Define and enforce custom policies for environment variables
+- 📊 **SARIF Output**: Generate SARIF 2.1.0 compliant reports for CI/CD integration
+- 🧹 **Sanitization**: Automatically sanitize sensitive values in output
+- 📈 **Metrics**: Track validation metrics for reporting
+- ✅ **Cross-Platform**: Supports Linux, macOS, and Windows
 
 ## Installation
 
+### Using pip
+
 ```bash
+pip install env-integrity-check
+```
+
+### From source
+
+```bash
+git clone https://github.com/canstralian/env-integrity-checK.git
+cd env-integrity-checK
 pip install -e .
 ```
 
-For development:
+### For development
 
 ```bash
 pip install -e ".[dev]"
@@ -59,14 +89,16 @@ env-integrity-check examples/example.env \
 
 ### Command Options
 
-- `--schema PATH`: Path to Pydantic schema module (Python file)
-- `--policy PATH`: Path to policy YAML file
-- `--output PATH, -o PATH`: Output SARIF report file (default: stdout)
-- `--sanitize/--no-sanitize`: Sanitize sensitive values in output (default: enabled)
-- `--detect-secrets/--no-detect-secrets`: Run detect-secrets scanner (default: enabled)
-- `--metrics/--no-metrics`: Include metrics in output (default: disabled)
-- `--version`: Show version and exit
-- `--help`: Show help message and exit
+| Flag | Description |
+|------|-------------|
+| `--schema PATH` | Path to Pydantic schema module (Python file) |
+| `--policy PATH` | Path to policy YAML file |
+| `--output PATH, -o PATH` | Output SARIF report file (default: stdout) |
+| `--sanitize/--no-sanitize` | Sanitize sensitive values in output (default: enabled) |
+| `--detect-secrets/--no-detect-secrets` | Run detect-secrets scanner (default: enabled) |
+| `--metrics/--no-metrics` | Include metrics in output (default: disabled) |
+| `--version` | Show version and exit |
+| `--help` | Show help message and exit |
 
 ## Schema Definition
 
@@ -156,6 +188,18 @@ black env_integrity_check tests
 ruff check env_integrity_check tests
 ```
 
+## Contributing
+
+We welcome contributions! To get started:
+
+1. Fork the repository.
+2. Create your feature branch (`git checkout -b feature/AmazingFeature`).
+3. Commit your changes (`git commit -m 'Add some AmazingFeature'`).
+4. Push to the branch (`git push origin feature/AmazingFeature`).
+5. Open a Pull Request.
+
+Please make sure to update tests as appropriate.
+
 ## License
 
-MIT License - See LICENSE file for details.
+This project is licensed under the terms of the [MIT License](LICENSE).
